@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "shashiwali/my-devops-app"
+        IMAGE_NAME = "shashiwali/my-devops-app2"
         IMAGE_TAG = "latest"
     }
 

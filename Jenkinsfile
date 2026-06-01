@@ -1,28 +1,37 @@
-stages {
+pipeline {
+    agent any
 
-    stage('Build Image') {
-        steps {
-            sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
-        }
+    environment {
+        IMAGE_NAME = "shashiwali/my-devops-app"
+        IMAGE_TAG = "latest"
     }
 
-    stage('Docker Login') {
-        steps {
-            withCredentials([
-                usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'USER',
-                    passwordVariable: 'PASS'
-                )
-            ]) {
-                sh 'echo $PASS | docker login -u $USER --password-stdin'
+    stages {
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
             }
         }
-    }
 
-    stage('Push Image') {
-        steps {
-            sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
+        stage('Docker Login') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'USER',
+                        passwordVariable: 'PASS'
+                    )
+                ]) {
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
+            }
         }
     }
 }
